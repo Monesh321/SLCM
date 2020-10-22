@@ -1,4 +1,6 @@
+import time
 from urllib.parse import urlparse
+from selenium.webdriver.support.ui import Select
 
 import requests
 
@@ -31,7 +33,8 @@ class contact_us(Common):
         "region": "//select[@id='control_Region']",
         "organization": "//select[@id='control_Organization']",
         "message": "//textarea[@id='control_message']",
-        "submit": "//button[@id='contactformSubmit']"
+        "submit": "//button[@id='contactformSubmit']",
+        "success_message": "//div[@id='success_message']"
     }
 
     def verify_phone_displayed(self):
@@ -42,3 +45,30 @@ class contact_us(Common):
         self.driver.find_element_by_xpath(self.locators["name"]).send_keys("Monish Ali")
         self.driver.find_element_by_xpath(self.locators["email"]).send_keys("mrksshali@gmail.com")
 
+        select = Select(self.driver.find_element_by_xpath(self.locators["region"]))
+
+        # select by visible text
+        select.select_by_visible_text('Canada')
+        # alloptions = select.options
+        # print(len(alloptions))
+        # for option in alloptions:
+        #     print(option.text)
+
+        # select by value
+        # select.select_by_value('1')
+        select = Select(self.driver.find_element_by_xpath(self.locators["organization"]))
+        select.select_by_index(2)
+        #
+        # alloptions = select.options
+        #
+        # print(len(alloptions))
+        #
+        # for option in alloptions:
+        #     print(option.text)
+
+        self.driver.find_element_by_xpath(self.locators["message"]).send_keys("testing")
+        self.driver.find_element_by_xpath(self.locators["submit"]).click()
+        time.sleep(3)
+        success_msg = self.driver.find_element_by_xpath(self.locators["success_message"]).text
+        print(success_msg)
+        assert success_msg != ""
